@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 5000;
@@ -30,11 +30,29 @@ async function run() {
 //     await client.connect();
 
 const foodCollection = client.db('foodCollection').collection('food');
+const availableFood = client.db('availableFood').collection('available');
 
 app.get('/food',async (req,res)=>{
  const cursor = foodCollection.find()
  const result =await cursor.toArray()
  res.send(result)
+})
+
+app.get('/food/:id',async(req,res)=>{
+  const id = req.params.id;
+  const query ={_id : new ObjectId(id)}
+  const options = {
+    // Include only the `title` and `imdb` fields in the returned document
+    projection: { name: 1, image: 1,quantity:1,location:1,date:1,notes:1},
+  };
+  const result =await foodCollection.findOne(query,options);
+  res.send(result)
+})
+
+app.get('/available',async (req,res)=>{
+const cursor = availableFood.find()
+const result = await cursor.toArray()
+res.send(result)
 })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
