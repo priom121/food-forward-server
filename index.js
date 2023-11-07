@@ -49,10 +49,39 @@ app.get('/food/:id',async(req,res)=>{
   res.send(result)
 })
 
+
 app.get('/available',async (req,res)=>{
-const cursor = availableFood.find()
+  // Filter http://localhost:5000/available?foodName=Egg
+  // sort http://localhost:5000/available?sortField=expiredDate&sortOrder=asc
+let query ={}
+let sort ={}
+const foodName= req.query.foodName
+const sortField = req.query.sortField
+const sortOrder = req.query.sortOrder
+
+if(foodName){
+  query.foodName =foodName
+}
+if(sortField && sortOrder){
+  sort [sortField] =sortOrder
+}
+
+const cursor = availableFood.find(query).sort(sort)
 const result = await cursor.toArray()
 res.send(result)
+})
+
+app.get('/available/:id',async(req,res)=>{
+  const id = req.params.id ;
+  const query ={_id : new ObjectId(id)};
+  const options = {
+    // Sort matched documents in descending order by rating
+    // sort: { "imdb.rating": -1 },
+    // Include only the `title` and `imdb` fields in the returned document
+    projection: {foodName: 1, foodImage: 1,donatorName:1,donatorImage:1,foodQuantity:1,location:1,expiredDate:1,additionalNotes:1 },
+  };
+  const result = await availableFood.findOne(query,options)
+  res.send(result)
 })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
