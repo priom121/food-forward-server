@@ -90,7 +90,7 @@ app.get('/food/:id',async(req,res)=>{
   const id = req.params.id;
   const query ={_id : new ObjectId(id)}
   const options = {
-    // Include only the `title` and `imdb` fields in the returned document
+   
     projection: { name: 1, image: 1,quantity:1,location:1,date:1,notes:1},
   };
   const result =await foodCollection.findOne(query,options);
