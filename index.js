@@ -31,6 +31,21 @@ async function run() {
 
 const foodCollection = client.db('foodCollection').collection('food');
 const availableFood = client.db('availableFood').collection('available');
+const requestCollection = client.db('requestCollection').collection('request');
+
+app.get('/request',async(req,res)=>{
+  const cursor = requestCollection.find()
+ const result =await cursor.toArray()
+ res.send(result)
+})
+
+
+app.post('/request',async(req,res)=>{
+  const request =req.body;
+  const result =await requestCollection.insertOne(request)
+  res.send(result)
+})
+
 
 app.get('/food',async (req,res)=>{
  const cursor = foodCollection.find()
@@ -78,7 +93,9 @@ app.get('/available/:id',async(req,res)=>{
     // Sort matched documents in descending order by rating
     // sort: { "imdb.rating": -1 },
     // Include only the `title` and `imdb` fields in the returned document
-    projection: {foodName: 1, foodImage: 1,donatorName:1,donatorImage:1,foodQuantity:1,location:1,expiredDate:1,additionalNotes:1 },
+    projection: {foodName: 1, donerEmail :1,
+  foodImage: 1,donatorName:1,donatorImage:1,foodQuantity:1,location:1,
+  expiredDate:1,additionalNotes:1 },
   };
   const result = await availableFood.findOne(query,options)
   res.send(result)
