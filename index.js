@@ -70,20 +70,7 @@ app.post('/request',async(req,res)=>{
   res.send(result)
 })
 
-// app.patch('/request/:id',async(req,res)=>{
-//   const id =req.params.id;
-//   const filter ={_id : new ObjectId(id)}
-//   const updated = req.body;
-//   console.log(updated);
-//   const updateDoc = {
-//     $set: {
-//       status: updated.status
-//     },
-//   };
-//  const result  = await requestCollection.updateOne(filter,updateDoc);
-//  res.send(result)
-  
-// })
+
 
 app.delete('/request/:id',async(req,res)=>{
   const id = req.params.id;
