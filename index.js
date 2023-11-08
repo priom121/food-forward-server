@@ -38,11 +38,57 @@ app.get('/request',async(req,res)=>{
  const result =await cursor.toArray()
  res.send(result)
 })
+// 
+app.get('/request/:id',async(req,res)=>{
+  const id = req.params.id;
+  const query = {_id:new ObjectId(id)}
+  const result = await requestCollection.findOne(query)
+  res.send(result)
+})
+
+app.put('/request/:id',async(req,res)=>{
+  const id =req.params.id;
+  const filter ={_id : new ObjectId(id)}
+  const options = {upsert:true}
+  const updateDoc = req.body
+  const updateFood ={
+    $set:{
+     photo:updateDoc. photo,
+     Quantity:updateDoc.Quantity,
+     Location:updateDoc.Location,
+     Date:updateDoc.Date
+    }
+  }
+  const result = await requestCollection.updateOne(filter,updateFood,options)
+  res.send(result)
+})
 
 
 app.post('/request',async(req,res)=>{
   const request =req.body;
   const result =await requestCollection.insertOne(request)
+  res.send(result)
+})
+
+// app.patch('/request/:id',async(req,res)=>{
+//   const id =req.params.id;
+//   const filter ={_id : new ObjectId(id)}
+//   const updated = req.body;
+//   console.log(updated);
+//   const updateDoc = {
+//     $set: {
+//       status: updated.status
+//     },
+//   };
+//  const result  = await requestCollection.updateOne(filter,updateDoc);
+//  res.send(result)
+  
+// })
+
+app.delete('/request/:id',async(req,res)=>{
+  const id = req.params.id;
+  const query = {_id : new ObjectId(id)}
+  const result = await requestCollection.deleteOne(query)
   res.send(result)
 })
 
